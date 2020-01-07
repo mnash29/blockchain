@@ -1,7 +1,7 @@
-import hexToBinary from 'hex-to-binary';
-import Block, { genesis, mineBlock, adjustDifficulty } from './block';
-import { GENESIS_DATA, MINE_RATE } from './config';
-import cryptoHash from './crypto-hash';
+const hexToBinary = require('hex-to-binary');
+const Block = require('./block');
+const { GENESIS_DATA, MINE_RATE } = require('./config');
+const cryptoHash = require('./crypto-hash');
 
 describe('Block', () => {
 	const timestamp = 2000;
@@ -22,7 +22,7 @@ describe('Block', () => {
 	});
 
 	describe('genesis()', () => {
-		const genesisBlock = genesis();
+		const genesisBlock = Block.genesis();
 
 		it('returns a Block instance', () => {
 			expect(genesisBlock instanceof Block).toBe(true);
@@ -34,9 +34,9 @@ describe('Block', () => {
 	});
 
 	describe('mineBlock', () => {
-		const lastBlock = genesis();
+		const lastBlock = Block.genesis();
 		const data = 'mined data';
-		const minedBlock = mineBlock({ lastBlock, data });
+		const minedBlock = Block.mineBlock({ lastBlock, data });
 
 		it('returns a Block instance', () => {
 			expect(minedBlock instanceof Block).toBe(true);
@@ -81,14 +81,14 @@ describe('Block', () => {
 
 	describe('adjustDifficulty()', () => {
 		it('raises the difficulty for a quickly mined block', () => {
-			expect(adjustDifficulty({ 
+			expect(Block.adjustDifficulty({ 
 				originalBlock: block,
 				timestamp: block.timestamp + MINE_RATE - 100
 			})).toEqual(block.difficulty + 1);
 		});
 
 		it('lowers the difficulty for a slowly mined block', () => {
-			expect(adjustDifficulty({
+			expect(Block.adjustDifficulty({
 				originalBlock: block,
 				timestamp: block.timestamp + MINE_RATE + 100
 			})).toEqual(block.difficulty - 1);
@@ -97,7 +97,7 @@ describe('Block', () => {
 		it('has a lower limit of 1', () => {
 			block.difficulty = -1;
 
-			expect(adjustDifficulty({ originalBlock: block, })).toEqual(1);
+			expect(Block.adjustDifficulty({ originalBlock: block, })).toEqual(1);
 		});
 	});
 });

@@ -1,13 +1,13 @@
-import { genesis, mineBlock } from './block';
-import cryptoHash from './crypto-hash';
+const Block = require('./block');
+const cryptoHash = require('./crypto-hash');
 
 class Blockchain {
 	constructor() {
-		this.chain = [genesis()];
+		this.chain = [Block.genesis()];
 	}
 
 	addBlock({ data }) {
-		const newBlock = mineBlock({
+		const newBlock = Block.mineBlock({
 			lastBlock: this.chain[this.chain.length-1],
 			data
 		});
@@ -16,7 +16,7 @@ class Blockchain {
 	}
 
 	static isValidChain(chain) {
-		if(JSON.stringify(chain[0]) !== JSON.stringify(genesis())) { return false; }
+		if(JSON.stringify(chain[0]) !== JSON.stringify(Block.genesis())) { return false; }
 
 		for(let i = 1; i < chain.length; i++) {
 			const { timestamp, lastHash, hash, nonce, difficulty, data } = chain[i];
@@ -53,4 +53,4 @@ class Blockchain {
 	}
 }
 
-export default Blockchain;
+module.exports = Blockchain;
